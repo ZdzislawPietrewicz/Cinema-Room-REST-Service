@@ -110,6 +110,21 @@ files:
     management.endpoints.web.exposure.include=*
     management.endpoint.shutdown.enabled=true
   learner_created: false
-feedback_link: https://hyperskill.org/projects/189/stages/945/implement#comment
-status: Unchecked
-record: -1
+- name: src/resources/static/index.html
+  visible: true
+  learner_created: true
+- name: src/cinema/Cinema.java
+  visible: true
+  learner_created: true
+- name: src/cinema/Seat.java
+  visible: true
+  learner_created: true
+- name: src/cinema/CinemaController.java
+  visible: true
+  learner_created: true
+feedback_link: https://hyperskill.org/learn/step/13375#comment
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Mon, 11 Jul 2022 12:01:47 UTC
+record: 1

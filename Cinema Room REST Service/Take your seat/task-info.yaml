@@ -223,6 +223,119 @@ files:
         };
     }
   learner_created: false
-feedback_link: https://hyperskill.org/projects/189/stages/946/implement#comment
+- name: src/cinema/Seat.java
+  visible: true
+  text: |
+    package cinema;
+
+    public class Seat {
+        private int row;
+        private int column;
+
+        public Seat(int row, int column) {
+            this.row = row;
+            this.column = column;
+        }
+
+        public Seat() {
+        }
+
+        public int getRow() {
+            return row;
+        }
+
+        public void setRow(int row) {
+            this.row = row;
+        }
+
+        public int getColumn() {
+            return column;
+        }
+
+        public void setColumn(int column) {
+            this.column = column;
+        }
+    }
+  learner_created: true
+- name: src/resources/static/index.html
+  visible: true
+  text: |-
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+    </head>
+    <body>
+    <h1>HELLO</h1>
+    </body>
+    </html>
+  learner_created: true
+- name: src/cinema/Cinema.java
+  visible: true
+  text: |+
+    package cinema;
+
+    import java.util.List;
+
+    public class Cinema {
+        private final int total_rows = 9;
+        private final int total_columns = 9;
+        private List<Seat> available_seats;
+
+        public Cinema() {
+        }
+
+        public int getTotal_rows() {
+            return total_rows;
+        }
+
+        public int getTotal_columns() {
+            return total_columns;
+        }
+
+        public List<Seat> getAvailable_seats() {
+            return available_seats;
+        }
+
+        public void setAvailable_seats(List<Seat> available_seats) {
+            this.available_seats = available_seats;
+        }
+    }
+
+  learner_created: true
+- name: src/cinema/CinemaController.java
+  visible: true
+  text: |+
+    package cinema;
+
+    import org.springframework.web.bind.annotation.GetMapping;
+    import org.springframework.web.bind.annotation.RestController;
+
+    import java.util.*;
+
+    @RestController
+    public class CinemaController {
+
+
+        @GetMapping("/seats")
+        public Cinema getSeats() {
+            Cinema cinema = new Cinema();
+            List<Seat> available_seats = new ArrayList<>();
+            for (int i = 0; i < cinema.getTotal_rows(); i++) {
+                for (int j = 0; j < cinema.getTotal_columns(); j++) {
+                    available_seats.add(new Seat(i + 1, j + 1));
+                }
+            }
+            cinema.setAvailable_seats(available_seats);
+            return cinema;
+        }
+
+    }
+
+
+
+  learner_created: true
+feedback_link: https://hyperskill.org/learn/step/13376#comment
 status: Unchecked
-record: -1
+record: 2
