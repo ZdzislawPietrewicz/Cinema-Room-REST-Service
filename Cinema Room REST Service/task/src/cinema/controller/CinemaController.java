@@ -1,13 +1,22 @@
-package cinema;
+package cinema.controller;
 
 import cinema.errors.RowOrColumnOutOfBounds;
+import cinema.errors.TicketAlreadyPurchased;
+import cinema.errors.WrongToken;
+import cinema.model.Cinema;
+import cinema.model.ReturnTicket;
+import cinema.model.Seat;
+import cinema.model.Ticket;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
 @RestController
 public class CinemaController {
     private List<Seat> available_seats = new ArrayList<>();
+    private List<Ticket> reservedTickets = new ArrayList<>();
     Cinema cinema = new Cinema();
 
     public CinemaController() {
@@ -17,7 +26,6 @@ public class CinemaController {
 
             }
         }
-
         cinema.setAvailable_seats(available_seats);
     }
 
@@ -27,18 +35,33 @@ public class CinemaController {
     }
 
     @PostMapping("/purchase")
-    public Seat purchaseTicket(@RequestBody Seat seat) {
-        if (seat.getRow() > cinema.getTotal_rows() || seat.getColumn() > cinema.getTotal_columns()) {
+    public Ticket purchaseTicket(@RequestBody Seat seat) {
+        if (seat.getRow() > cinema.getTotal_rows() || seat.getColumn() > cinema.getTotal_columns() || seat.getColumn() <= 0 || seat.getRow() <= 0) {
             throw new RowOrColumnOutOfBounds("The number of a row or a column is out of bounds!");
         }
-        for (Seat available_seat : cinema.getAvailable_seats()) {
-            if (available_seat.getColumn() == seat.getColumn() && available_seat.getRow() == seat.getRow()) {
-                cinema.getAvailable_seats().remove(available_seat);
-                return available_seat;
+        for (Seat reservedSeat : cinema.getAvailable_seats()) {
+            if (reservedSeat.getColumn() == seat.getColumn() && reservedSeat.getRow() == seat.getRow()) {
+                cinema.getAvailable_seats().remove(reservedSeat);
+                Ticket ticket = new Ticket(reservedSeat);
+                reservedTickets.add(ticket);
+                return ticket;
             }
         }
-       return null;
+        throw new TicketAlreadyPurchased("The ticket has been already purchased!");
 
+    }
+
+    @PostMapping("/return")
+    public ReturnTicket returnTicket(@RequestBody Ticket ticket) {
+        for (Ticket reservedTicket : reservedTickets) {
+            if (reservedTicket.getToken().equals(ticket.getToken())) {
+                reservedTickets.remove(reservedTicket);
+                available_seats.add(new Seat(reservedTicket.getTicket().getRow(), reservedTicket.getTicket().getColumn()));
+                ReturnTicket returned_ticket = new ReturnTicket(new Seat(reservedTicket.getTicket().getRow(), reservedTicket.getTicket().getColumn()));
+                return returned_ticket;
+            }
+        }
+        throw new WrongToken("Wrong token!");
     }
 }
 

@@ -297,6 +297,243 @@ files:
         };
     }
   learner_created: false
+- name: src/cinema/model/Seat.java
+  visible: true
+  text: |
+    package cinema.model;
+
+    public class Seat {
+        private int row;
+        private int column;
+        private int price;
+
+        public Seat(int row, int column) {
+            this.row = row;
+            this.column = column;
+            if (row <= 4) {
+                this.price = 10;
+            } else {
+                this.price = 8;
+            }
+        }
+
+        public Seat() {
+        }
+
+        public int getRow() {
+            return row;
+        }
+
+        public void setRow(int row) {
+            this.row = row;
+        }
+
+        public int getColumn() {
+            return column;
+        }
+
+        public void setColumn(int column) {
+            this.column = column;
+        }
+
+        public int getPrice() {
+            return price;
+        }
+
+        public void setPrice(int price) {
+            this.price = price;
+        }
+
+    }
+  learner_created: true
+- name: src/cinema/model/Cinema.java
+  visible: true
+  text: |+
+    package cinema.model;
+
+    import cinema.model.Seat;
+
+    import java.util.List;
+
+    public class Cinema {
+        private final int total_rows = 9;
+        private final int total_columns = 9;
+        private List<Seat> available_seats;
+
+        public Cinema() {
+        }
+
+        public int getTotal_rows() {
+            return total_rows;
+        }
+
+        public int getTotal_columns() {
+            return total_columns;
+        }
+
+        public List<Seat> getAvailable_seats() {
+            return available_seats;
+        }
+
+        public void setAvailable_seats(List<Seat> available_seats) {
+            this.available_seats = available_seats;
+        }
+    }
+
+  learner_created: true
+- name: src/cinema/errors/ControllerExceptionHandler.java
+  visible: true
+  text: |
+    package cinema.errors;
+
+    import cinema.errors.CustomErrorMessage;
+    import cinema.errors.RowOrColumnOutOfBounds;
+    import org.springframework.http.HttpStatus;
+    import org.springframework.http.ResponseEntity;
+    import org.springframework.web.bind.annotation.ControllerAdvice;
+    import org.springframework.web.bind.annotation.ExceptionHandler;
+    import org.springframework.web.context.request.WebRequest;
+
+    @ControllerAdvice
+    public class ControllerExceptionHandler {
+
+        @ExceptionHandler(RowOrColumnOutOfBounds.class)
+        public ResponseEntity<CustomErrorMessage> handleRowOrColumnOutOfBound(
+                RowOrColumnOutOfBounds e, WebRequest request) {
+            CustomErrorMessage customErrorMessage = new CustomErrorMessage(e.getMessage());
+            return new ResponseEntity<>(customErrorMessage, HttpStatus.BAD_REQUEST);
+        }
+        @ExceptionHandler(TicketAlreadyPurchased.class)
+        public ResponseEntity<CustomErrorMessage>handleTicketAlreadyPurchased(TicketAlreadyPurchased e, WebRequest request){
+            CustomErrorMessage customErrorMessage = new CustomErrorMessage(e.getMessage());
+            return new ResponseEntity<>(customErrorMessage, HttpStatus.BAD_REQUEST);
+        }
+    }
+  learner_created: true
+- name: src/cinema/errors/TicketAlreadyPurchased.java
+  visible: true
+  text: |
+    package cinema.errors;
+
+    public class TicketAlreadyPurchased extends RuntimeException{
+        public TicketAlreadyPurchased(String message) {
+            super(message);
+        }
+    }
+  learner_created: true
+- name: src/resources/static/index.html
+  visible: true
+  text: |-
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+    </head>
+    <body>
+    <h1>HELLO</h1>
+    </body>
+    </html>
+  learner_created: true
+- name: src/cinema/errors/CustomErrorMessage.java
+  visible: true
+  text: |
+    package cinema.errors;
+
+    import java.util.HashMap;
+
+    public class CustomErrorMessage {
+    private String error;
+
+        public CustomErrorMessage(String error) {
+            this.error = error;
+        }
+
+        public String getError() {
+            return error;
+        }
+
+        public void setError(String error) {
+            this.error = error;
+        }
+    }
+  learner_created: true
+- name: src/cinema/controller/CinemaController.java
+  visible: true
+  text: |+
+    package cinema.controller;
+
+    import cinema.errors.RowOrColumnOutOfBounds;
+    import cinema.errors.TicketAlreadyPurchased;
+    import cinema.model.Cinema;
+    import cinema.model.Seat;
+    import org.springframework.web.bind.annotation.*;
+
+    import java.util.*;
+
+    @RestController
+    public class CinemaController {
+        private List<Seat> available_seats = new ArrayList<>();
+        Cinema cinema = new Cinema();
+
+        public CinemaController() {
+            for (int i = 0; i < cinema.getTotal_rows(); i++) {
+                for (int j = 0; j < cinema.getTotal_columns(); j++) {
+                    available_seats.add(new Seat(i + 1, j + 1));
+
+                }
+            }
+
+            cinema.setAvailable_seats(available_seats);
+        }
+
+        @GetMapping("/seats")
+        public Cinema getSeats() {
+            return cinema;
+        }
+
+        @PostMapping("/purchase")
+        public Seat purchaseTicket(@RequestBody Seat seat) {
+            if (seat.getRow() > cinema.getTotal_rows() || seat.getColumn() > cinema.getTotal_columns() || seat.getColumn() <= 0 || seat.getRow() <= 0) {
+                throw new RowOrColumnOutOfBounds("The number of a row or a column is out of bounds!");
+            }
+            for (Seat available_seat : cinema.getAvailable_seats()) {
+                if (available_seat.getColumn() == seat.getColumn() && available_seat.getRow() == seat.getRow()) {
+                    cinema.getAvailable_seats().remove(available_seat);
+                    return available_seat;
+                }
+            }
+            throw new TicketAlreadyPurchased("The ticket has been already purchased!");
+
+        }
+    }
+
+
+
+  learner_created: true
+- name: src/cinema/errors/RowOrColumnOutOfBounds.java
+  visible: true
+  text: |
+    package cinema.errors;
+
+    public class RowOrColumnOutOfBounds extends RuntimeException{
+        public RowOrColumnOutOfBounds(String message) {
+            super(message);
+        }
+    }
+  learner_created: true
+- name: src/cinema/model/Ticket.java
+  visible: true
+  learner_created: true
+- name: src/cinema/errors/WrongToken.java
+  visible: true
+  learner_created: true
+- name: src/cinema/model/ReturnTicket.java
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/learn/step/13377#comment
-status: Unchecked
-record: -1
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Wed, 13 Jul 2022 18:40:26 UTC
+record: 3

@@ -223,7 +223,30 @@ files:
         };
     }
   learner_created: false
-- name: src/cinema/Seat.java
+- name: src/resources/static/index.html
+  visible: true
+  text: |-
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+    </head>
+    <body>
+    <h1>HELLO</h1>
+    </body>
+    </html>
+  learner_created: true
+- name: src/cinema/errors/RowOrColumnOutOfBounds.java
+  visible: true
+  learner_created: true
+- name: src/cinema/errors/CustomErrorMessage.java
+  visible: true
+  learner_created: true
+- name: src/cinema/errors/ControllerExceptionHandler.java
+  visible: true
+  learner_created: true
+- name: src/cinema/model/Seat.java
   visible: true
   text: |
     package cinema;
@@ -257,21 +280,7 @@ files:
         }
     }
   learner_created: true
-- name: src/resources/static/index.html
-  visible: true
-  text: |-
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Title</title>
-    </head>
-    <body>
-    <h1>HELLO</h1>
-    </body>
-    </html>
-  learner_created: true
-- name: src/cinema/Cinema.java
+- name: src/cinema/model/Cinema.java
   visible: true
   text: |+
     package cinema;
@@ -304,7 +313,7 @@ files:
     }
 
   learner_created: true
-- name: src/cinema/CinemaController.java
+- name: src/cinema/controller/CinemaController.java
   visible: true
   text: |+
     package cinema;
@@ -336,9 +345,12 @@ files:
 
 
   learner_created: true
-- name: src/cinema/CinemaOperations.java
+- name: src/cinema/errors/TicketAlreadyPurchased.java
   visible: true
   learner_created: true
 feedback_link: https://hyperskill.org/learn/step/13376#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Wed, 13 Jul 2022 11:08:52 UTC
 record: 2

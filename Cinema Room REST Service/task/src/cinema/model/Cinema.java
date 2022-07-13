@@ -1,4 +1,6 @@
-package cinema;
+package cinema.model;
+
+import cinema.model.Seat;
 
 import java.util.List;
 
@@ -6,6 +8,7 @@ public class Cinema {
     private final int total_rows = 9;
     private final int total_columns = 9;
     private List<Seat> available_seats;
+
 
     public Cinema() {
     }
@@ -25,5 +28,7 @@ public class Cinema {
     public void setAvailable_seats(List<Seat> available_seats) {
         this.available_seats = available_seats;
     }
+
+
 }
 
