@@ -27,4 +27,9 @@ public class ControllerExceptionHandler {
         CustomErrorMessage customErrorMessage = new CustomErrorMessage(e.getMessage());
         return new ResponseEntity<>(customErrorMessage,HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(WrongPasswordException.class)
+    public ResponseEntity<CustomErrorMessage>handleWrongPassword(WrongPasswordException e){
+        CustomErrorMessage customErrorMessage = new CustomErrorMessage(e.getMessage());
+    return new ResponseEntity<>(customErrorMessage,HttpStatus.UNAUTHORIZED);
+    }
 }

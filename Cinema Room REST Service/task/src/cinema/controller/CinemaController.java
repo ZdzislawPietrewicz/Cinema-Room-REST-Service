@@ -2,11 +2,10 @@ package cinema.controller;
 
 import cinema.errors.RowOrColumnOutOfBounds;
 import cinema.errors.TicketAlreadyPurchased;
+import cinema.errors.WrongPasswordException;
 import cinema.errors.WrongToken;
-import cinema.model.Cinema;
-import cinema.model.ReturnTicket;
-import cinema.model.Seat;
-import cinema.model.Ticket;
+import cinema.model.*;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -17,9 +16,9 @@ import java.util.*;
 public class CinemaController {
     private List<Seat> available_seats = new ArrayList<>();
     private List<Ticket> reservedTickets = new ArrayList<>();
-    Cinema cinema = new Cinema();
-
+    Cinema cinema;
     public CinemaController() {
+        cinema=new Cinema();
         for (int i = 0; i < cinema.getTotal_rows(); i++) {
             for (int j = 0; j < cinema.getTotal_columns(); j++) {
                 available_seats.add(new Seat(i + 1, j + 1));
@@ -62,6 +61,14 @@ public class CinemaController {
             }
         }
         throw new WrongToken("Wrong token!");
+    }
+    @PostMapping("/stats")
+    public Stats showStatistics(@RequestParam(required = false)  String password ){
+        if("super_secret".equals(password)){
+            Stats stats = new Stats(reservedTickets);
+            return stats;
+        }
+        throw new WrongPasswordException("The password is wrong!");
     }
 }
 
